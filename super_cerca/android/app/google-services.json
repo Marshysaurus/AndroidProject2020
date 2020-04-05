@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "242168733435",
+    "firebase_url": "https://super-cerca.firebaseio.com",
+    "project_id": "super-cerca",
+    "storage_bucket": "super-cerca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242168733435:android:aabd118341df58ebd8da5e",
+        "android_client_info": {
+          "package_name": "com.itesm.supercerca"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "242168733435-k29pgdna3vjn8c9q1qit5f4vih1dc2rp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeszNL1vVIXuY8RMmJgyKoFBiIMFv07-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "242168733435-k29pgdna3vjn8c9q1qit5f4vih1dc2rp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
