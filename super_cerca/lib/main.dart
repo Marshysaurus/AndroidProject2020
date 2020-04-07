@@ -18,15 +18,17 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        StreamProvider<User>.value(value: AuthService().user)
-      ],
+      providers: [StreamProvider<User>.value(value: AuthService().user)],
       child: MaterialApp(
           title: 'Super Cerca',
           theme: ThemeData(
-            backgroundColor: Colors.white,
-            primarySwatch: Colors.blue,
-          ),
+              backgroundColor: Colors.white,
+              primarySwatch: Colors.blue,
+              textTheme: Theme.of(context).textTheme.apply(
+                  bodyColor: Colors.white,
+                  displayColor: Colors.white,
+                  fontFamily: 'Nunito'),
+              fontFamily: 'Nunito'),
           debugShowCheckedModeBanner: false,
           home: SplashScreen()),
     );
