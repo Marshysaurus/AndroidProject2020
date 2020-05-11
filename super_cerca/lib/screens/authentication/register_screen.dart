@@ -8,12 +8,12 @@ import 'package:supercerca/services/auth_service.dart';
 import 'package:supercerca/utils/custom_scroll.dart';
 import 'package:supercerca/widgets/loading_widget.dart';
 
-class SignInScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  _SignInScreenState createState() => _SignInScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   // Tag para la animation de Flare
   String animation;
 
@@ -22,11 +22,14 @@ class _SignInScreenState extends State<SignInScreen> {
   final AuthService _authService = AuthService();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final FocusNode _nameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
 
+  String _nameError;
   String _emailError;
   String _wrongPasswordError;
   bool _isPasswordVisible = false;
@@ -40,9 +43,10 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _emailFocus.dispose();
+    _nameFocus.dispose();
     super.dispose();
   }
 
@@ -52,6 +56,7 @@ class _SignInScreenState extends State<SignInScreen> {
     return SafeArea(
         child: Scaffold(
             key: _scaffoldKey,
+            resizeToAvoidBottomPadding: false,
             body: GestureDetector(
                 onTap: () => FocusScope.of(context).unfocus(),
                 child: !loading ? _buildForm() : LoadingWidget())));
@@ -89,10 +94,35 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
             SizedBox(height: 32.0),
-            Text("Inicio de sesión",
+            Text("Registro",
                 style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold)),
             SizedBox(height: 32.0),
             TextFormField(
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: _onNameSubmitted,
+              focusNode: _nameFocus,
+              controller: _nameController,
+              validator: _validateName,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(color: Colors.black, fontSize: 18.0),
+              decoration: InputDecoration(
+                errorText: _nameError,
+                fillColor: Color(0xFFF5F5F8),
+                filled: true,
+                hintText: "Nombre",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    borderSide: BorderSide.none),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.blue),
+                ),
+              ),
+              keyboardType: TextInputType.text,
+            ),
+            SizedBox(height: 30.0),TextFormField(
               textInputAction: TextInputAction.next,
               onFieldSubmitted: _onEmailSubmitted,
               focusNode: _emailFocus,
@@ -162,13 +192,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   if (_formKey.currentState.validate()) {
                     setState(() => loading = true);
                     dynamic result =
-                        await _authService.signInWithEmailAndPassword(
-                            _emailController.text, _passwordController.text);
+                    await _authService.registerNewUser(_nameController.text, _emailController.text, _passwordController.text);
                     if (result == null) {
                       setState(() => loading = false);
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                         content: Text(
-                          'El usuario o la contraseña no son correctos.',
+                          'Usuario ya registrado bajo ese correo.',
                           style: TextStyle(color: Colors.white),
                         ),
                         duration: Duration(seconds: 4),
@@ -186,7 +215,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 // onPressed: _handleSignIn,
                 textColor: Colors.white,
                 child: Text(
-                  'Iniciar sesión',
+                  'Registro',
                   style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -197,20 +226,20 @@ class _SignInScreenState extends State<SignInScreen> {
                 textAlign: TextAlign.center,
                 text: TextSpan(children: [
                   TextSpan(
-                      text: "¿No tienes cuenta? ",
+                      text: "¿Ya tienes cuenta? ",
                       style: TextStyle(
                           color: Color(0xFF36476C),
                           fontSize: 18.0,
                           fontWeight: FontWeight.w400)),
                   TextSpan(
-                    text: " Regístrate.",
+                    text: " Inicia sesión.",
                     style: TextStyle(
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                         fontSize: 18.0,
                         fontWeight: FontWeight.w400),
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => Navigator.pushNamed(context, '/register'),
+                      ..onTap = () => Navigator.pushNamed(context, '/signin'),
                   )
                 ]),
               ),
@@ -218,7 +247,7 @@ class _SignInScreenState extends State<SignInScreen> {
             Padding(
               padding: EdgeInsets.only(
                   bottom: _emailFocus.hasPrimaryFocus ||
-                          _passwordFocus.hasPrimaryFocus
+                      _passwordFocus.hasPrimaryFocus
                       ? 300.0
                       : 0.0),
             )
@@ -235,11 +264,20 @@ class _SignInScreenState extends State<SignInScreen> {
     });
   }
 
+  String _validateName(String name) =>
+    name.isNotEmpty ? null : 'Nombre inválido';
+
+
   String _validateEmail(String email) =>
       EmailValidator.validate(email) ? null : 'Email inválido';
 
   String _validatePassword(String password) =>
       password.isEmpty ? 'Contraseña inválida' : null;
+
+  void _onNameSubmitted(String term) {
+    _nameFocus.unfocus();
+    FocusScope.of(context).requestFocus(_emailFocus);
+  }
 
   void _onEmailSubmitted(String term) {
     _emailFocus.unfocus();
