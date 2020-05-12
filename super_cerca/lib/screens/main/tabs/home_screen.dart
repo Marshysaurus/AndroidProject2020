@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:supercerca/models/product.dart';
 // Internal imports
 import 'package:supercerca/models/user.dart';
+import 'package:supercerca/screens/authentication/maps_screen.dart';
 import 'package:supercerca/screens/main/products/details_screen.dart';
 import 'package:supercerca/services/database_service.dart';
 import 'package:supercerca/widgets/loading_widget.dart';
@@ -25,14 +26,54 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     products = [
-      Product(id: 'ID 1', title: 'Cabbage boi', price: 20.00, image: 'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(id: 'ID 2', title: 'Lechuguita', price: 20.00, image: 'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(id: 'ID 3', title: 'Cebolla', price: 20.00, image: 'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(id: 'ID 4', title: 'Producto 4', price: 20.00, image: 'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(id: 'ID 5', title: 'Producto 5', price: 20.00, image: 'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(id: 'ID 6', title: 'Producto 6', price: 20.00, image: 'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(id: 'ID 7', title: 'Producto 7', price: 20.00, image: 'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(id: 'ID 8', title: 'Producto 8', price: 20.00, image: 'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
+      Product(
+          id: 'ID 1',
+          title: 'Cabbage boi',
+          price: 20.00,
+          image:
+              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
+      Product(
+          id: 'ID 2',
+          title: 'Lechuguita',
+          price: 20.00,
+          image:
+              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
+      Product(
+          id: 'ID 3',
+          title: 'Cebolla',
+          price: 20.00,
+          image:
+              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
+      Product(
+          id: 'ID 4',
+          title: 'Producto 4',
+          price: 20.00,
+          image:
+              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
+      Product(
+          id: 'ID 5',
+          title: 'Producto 5',
+          price: 20.00,
+          image:
+              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
+      Product(
+          id: 'ID 6',
+          title: 'Producto 6',
+          price: 20.00,
+          image:
+              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
+      Product(
+          id: 'ID 7',
+          title: 'Producto 7',
+          price: 20.00,
+          image:
+              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
+      Product(
+          id: 'ID 8',
+          title: 'Producto 8',
+          price: 20.00,
+          image:
+              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
     ];
   }
 
@@ -71,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   style: TextStyle(
                                       color: Color(0xFF36476C),
                                       fontFamily: 'Nunito',
-                                      fontSize: 25.0,
+                                      fontSize: 28.0,
                                       fontWeight: FontWeight.bold)),
                               TextSpan(
                                   text: userData.userName.contains(" ")
@@ -81,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   style: TextStyle(
                                       color: Colors.blue,
                                       fontFamily: 'Nunito',
-                                      fontSize: 25.0,
+                                      fontSize: 28.0,
                                       fontWeight: FontWeight.bold))
                             ]),
                           ),
@@ -90,10 +131,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           flex: 1,
                           child: Container(
                               alignment: Alignment.centerRight,
-                              child: Icon(
-                                Icons.shopping_cart,
-                                color: Colors.blue,
-                                size: 28.0,
+                              child: IconButton(
+                                onPressed: () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) => MapsScreen())),
+                                icon: Icon(
+                                  Icons.shopping_cart,
+                                  color: Colors.blue,
+                                  size: 28.0,
+                                ),
                               )),
                         )
                       ],

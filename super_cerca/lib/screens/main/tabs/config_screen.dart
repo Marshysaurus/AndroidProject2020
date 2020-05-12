@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supercerca/services/auth_service.dart';
+import 'package:supercerca/utils/custom_scroll.dart';
 import 'package:supercerca/widgets/dialogs.dart';
 
 class ConfigScreen extends StatefulWidget {
@@ -21,11 +22,6 @@ class _ConfigScreenState extends State<ConfigScreen> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height,
@@ -33,39 +29,42 @@ class _ConfigScreenState extends State<ConfigScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: settings.length,
-            itemBuilder: (BuildContext context, index) {
-              return Column(
-                children: [
-                  index == 0 || index == 4 || index == 6
-                      ? Container(
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.only(top: 20.0),
-                          padding: EdgeInsets.only(left: 32.0),
-                          height: 40.0,
-                          child: Text(
-                            settings[index],
-                            style: TextStyle(
-                                color: Color(0xFF36476C),
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        )
-                      : Container(
-                          alignment: Alignment.centerLeft,
-                          height: 50.0,
-                          padding: EdgeInsets.only(left: 32.0),
-                          child: Text(
-                            settings[index],
-                            style: TextStyle(
-                                color: Color(0xFF36476C), fontSize: 22.0),
-                          )),
-                  Divider()
-                ],
-              );
-            },
+          ScrollConfiguration(
+            behavior: MyBehavior(),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: settings.length,
+              itemBuilder: (BuildContext context, index) {
+                return Column(
+                  children: [
+                    index == 0 || index == 4 || index == 6
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            margin: EdgeInsets.only(top: 20.0),
+                            padding: EdgeInsets.only(left: 32.0),
+                            height: 40.0,
+                            child: Text(
+                              settings[index],
+                              style: TextStyle(
+                                  color: Color(0xFF36476C),
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        : Container(
+                            alignment: Alignment.centerLeft,
+                            height: 50.0,
+                            padding: EdgeInsets.only(left: 32.0),
+                            child: Text(
+                              settings[index],
+                              style: TextStyle(
+                                  color: Color(0xFF36476C), fontSize: 22.0),
+                            )),
+                    Divider()
+                  ],
+                );
+              },
+            ),
           ),
           SizedBox(height: 40.0),
           Container(
