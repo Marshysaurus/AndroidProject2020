@@ -87,7 +87,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
                               context,
                               MaterialPageRoute(builder: (context) => DetailsScreen(product: snapshot.data[index]))),
                           child: Container(
-                            child: Center(child: Image.network(snapshot.data[index].title)),
+                            child: Center(child: Image.network(snapshot.data[index].image)),
                           ),
                         );
                       });
