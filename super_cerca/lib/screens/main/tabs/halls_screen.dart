@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supercerca/models/category.dart';
@@ -72,10 +71,8 @@ class _HallsScreenState extends State<HallsScreen> {
                 physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.0)
-                    ),
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
                     child: Stack(
                       children: [
                         // Un poco de hardcodeo por las fotos con fondo blanco
