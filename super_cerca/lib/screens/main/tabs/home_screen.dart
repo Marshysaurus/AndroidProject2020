@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:supercerca/models/product.dart';
 // Internal imports
 import 'package:supercerca/models/user.dart';
-import 'package:supercerca/screens/authentication/maps_screen.dart';
 import 'package:supercerca/screens/main/products/details_screen.dart';
 import 'package:supercerca/services/database_service.dart';
 import 'package:supercerca/widgets/loading_widget.dart';
@@ -132,9 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Container(
                               alignment: Alignment.centerRight,
                               child: IconButton(
-                                onPressed: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (context) => MapsScreen())),
+                                onPressed: null,
                                 icon: Icon(
                                   Icons.shopping_cart,
                                   color: Colors.blue,

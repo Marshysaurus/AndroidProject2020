@@ -3,8 +3,9 @@ import 'package:supercerca/screens/main/products/details_screen.dart';
 import 'package:supercerca/services/database_service.dart';
 
 class CategoryProducts extends StatefulWidget {
-  CategoryProducts({this.categoryID});
+  CategoryProducts({this.categoryID, this.categoryTitle});
   final String categoryID;
+  final String categoryTitle;
 
   @override
   _CategoryProductsState createState() => _CategoryProductsState();
@@ -25,6 +26,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
       body: Padding(
         padding: EdgeInsets.fromLTRB(32.0, 40.0, 32.0, 0.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               height: 60.0,
@@ -62,6 +64,13 @@ class _CategoryProductsState extends State<CategoryProducts> {
                 ],
               ),
             ),
+            Padding(
+              padding: EdgeInsets.only(top: 20.0),
+              child: Text(
+                widget.categoryTitle,
+                style: TextStyle(color: Color(0xFF36476C), fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+            ),
             StreamBuilder(
               stream: DatabaseService().products(widget.categoryID),
               builder: (BuildContext context, snapshot) {
@@ -78,7 +87,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
                               context,
                               MaterialPageRoute(builder: (context) => DetailsScreen(product: snapshot.data[index]))),
                           child: Container(
-                            child: Center(child: Text(snapshot.data[index].title)),
+                            child: Center(child: Image.network(snapshot.data[index].title)),
                           ),
                         );
                       });
@@ -88,7 +97,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
                   );
                 }
               },
-            )
+            ),
           ],
         ),
       )

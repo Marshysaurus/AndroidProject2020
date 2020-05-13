@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flare_flutter/flare_cache.dart';
 import 'package:flutter/material.dart';
 
@@ -36,6 +37,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    var myGroup = AutoSizeGroup();
+
     return Scaffold(
       backgroundColor: Color(0xFF0096FF),
       body: Column(
@@ -43,8 +47,8 @@ class _SplashScreenState extends State<SplashScreen> {
         children: <Widget>[
           Center(
             child: Container(
-              height: 150.0,
-              width: 150.0,
+              height: width / 3,
+              width: width / 3,
               child: Hero(
                 tag: 'heartLogo',
                 child: animation,
@@ -54,9 +58,13 @@ class _SplashScreenState extends State<SplashScreen> {
           Center(
             child: Hero(
               tag: 'text',
-              child: Text("SUPER\nCERCA",
-                  style: Theme.of(context).textTheme.headline5.copyWith(
-                      fontWeight: FontWeight.w800, color: Colors.white)),
+              child: AutoSizeText("SUPER\nCERCA",
+                  group: myGroup,
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w800, fontSize: 30.0),
+                minFontSize: 15.0,
+                stepGranularity: 5.0,
+              ),
             ),
           )
         ],

@@ -72,14 +72,44 @@ class _HallsScreenState extends State<HallsScreen> {
                 physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CategoryProducts(
-                                categoryID: categories[index].id))),
-                    child: Center(
-                      child: Text(categories[index].title),
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0)
+                    ),
+                    child: Stack(
+                      children: [
+                        // Un poco de hardcodeo por las fotos con fondo blanco
+                        Positioned.fill(child: Container(color: Colors.white)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+                              child: Text(categories[index].title,
+                                style: TextStyle(color: Color(0xFF36476C), fontSize: 16.0, fontWeight: FontWeight.bold),
+                                maxLines: 2,
+                              ),
+                            ),
+                            Expanded(
+                              child: Center(child: Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Image.network(categories[index].image),
+                              )),
+                            )
+                          ],
+                        ),
+                        Positioned.fill(
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CategoryProducts(
+                                              categoryID: categories[index].id, categoryTitle: categories[index].title)))
+                              ),
+                            ))
+                      ],
                     ),
                   );
                 },

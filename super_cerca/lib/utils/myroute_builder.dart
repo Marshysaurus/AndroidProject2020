@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:supercerca/models/product.dart';
-import 'package:supercerca/screens/main/products/details_screen.dart';
 // Internal imports
-import 'package:supercerca/screens/splash_screen.dart';
-import 'package:supercerca/screens/main/main_screen.dart';
 import 'package:supercerca/screens/authentication/signin_screen.dart';
 import 'package:supercerca/screens/authentication/register_screen.dart';
+import 'package:supercerca/screens/authentication/maps_screen.dart';
+import 'package:supercerca/screens/main/main_screen.dart';
+import 'package:supercerca/screens/main/products/details_screen.dart';
+import 'package:supercerca/screens/splash_screen.dart';
 import 'package:supercerca/screens/wrapper.dart';
 
 class MyRouteBuilder {
@@ -37,6 +37,19 @@ class MyRouteBuilder {
                 (context, animation, secondaryAnimation, child) =>
                     FadeTransition(opacity: animation, child: child),
             transitionDuration: Duration(milliseconds: 500));
+        break;
+      case '/maps':
+        page = PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                MapsScreen(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              var begin = Offset(0.0, 1.0);
+              var end = Offset.zero;
+              var tween = Tween(begin: begin, end: end);
+              var offsetAnimation = animation.drive(tween);
+              return SlideTransition(position: offsetAnimation, child: child);
+            });
         break;
       case '/main':
         page = PageRouteBuilder(

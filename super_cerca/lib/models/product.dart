@@ -15,7 +15,7 @@ class Product {
       id: doc.documentID,
       title: data['title'] ?? 'Bulbasaur uwu',
       image: data['image'] ?? 'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show',
-      price: data['price'] ?? 0.0
+      price: data['unitPrice'].toDouble() ?? 0.0
     );
   }
 }

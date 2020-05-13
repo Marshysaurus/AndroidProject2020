@@ -204,8 +204,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         backgroundColor: Colors.red,
                       ));
                     } else {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/main', (_) => false);
+                      Navigator.of(context).pushNamedAndRemoveUntil('/maps', (_) => false);
                     }
                   }
                 },

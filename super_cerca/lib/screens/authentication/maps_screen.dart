@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapsScreen extends StatefulWidget {
@@ -8,12 +7,8 @@ class MapsScreen extends StatefulWidget {
 }
 
 class _MapsScreenState extends State<MapsScreen> {
-  CameraPosition _initialPosition = CameraPosition(target: LatLng(26.8206, 30.8025));
-  Completer<GoogleMapController> _controller = Completer();
-
-  void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-  }
+  CameraPosition _initialPosition = CameraPosition(target: LatLng(19.28419204919249, -99.1359024219625), zoom: 17);
+  GoogleMapController mapController;
 
   @override
   Widget build(BuildContext context) {
@@ -36,23 +31,28 @@ class _MapsScreenState extends State<MapsScreen> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        height: 28.0,
-                        width: 28.0,
-                        margin: EdgeInsets.only(right: 10.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.0),
-                          color: Colors.blue
+                      /*InkWell(
+                        focusColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Container(
+                          height: 28.0,
+                          width: 28.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5.0),
+                            color: Colors.blue
+                          ),
+                          child: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20.0),
                         ),
-                        child: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20.0),
                       ),
+                      SizedBox(width: 10.0),*/
                       Text(
                         "Confirmar Dirección",
                         style: TextStyle(color: Colors.blue, fontSize: 28.0, fontWeight: FontWeight.bold),
                       )
                     ],
                   ),
-                  Text("Paseo del Cantil #51",
+                  Text("Tecnológico de Monterrey Campus Ciudad de México",
                     style: TextStyle(color: Color(0xFF36476C), fontSize: 20.0),
                   )
                 ],
@@ -62,11 +62,15 @@ class _MapsScreenState extends State<MapsScreen> {
             Container(
               height: 400.0,
               width: double.infinity,
-              child: GoogleMap(
-                onMapCreated: _onMapCreated,
-                initialCameraPosition: _initialPosition,
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
+              child: Stack(
+                children: [
+                  GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: _initialPosition,
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: true
+                  ),
+                ],
               ),
             ),
             SizedBox(height: 32.0),
@@ -96,7 +100,7 @@ class _MapsScreenState extends State<MapsScreen> {
               child: ButtonTheme(
                 height: 45.0,
                 child: FlatButton(
-                  child: Text('Agregar',
+                  child: Text('¡Listo!',
                       style: TextStyle(
                           fontSize: 18.0, fontWeight: FontWeight.bold)),
                   color: Colors.blue,
@@ -104,12 +108,19 @@ class _MapsScreenState extends State<MapsScreen> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
                       side: BorderSide(color: Colors.blue, width: 1.5)),
-                  onPressed: () => print('owo'),
+                  onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                      context, '/main', (_) => false),
                 ),
               ),
             )
           ],
         ));
+  }
+
+  _onMapCreated(GoogleMapController controller) {
+    setState(() {
+      mapController = controller;
+    });
   }
 }
 

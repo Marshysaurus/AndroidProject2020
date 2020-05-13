@@ -23,13 +23,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 style: TextStyle(
                     color: Color(0xFF36476C),
                     fontFamily: 'Nunito',
-                    fontSize: 26.0,
+                    fontSize: 28.0,
                     fontWeight: FontWeight.bold)),
             Container(
               margin: EdgeInsets.symmetric(vertical: 25.0),
               child: Center(
                   child: Image.network(widget.product.image,
-                      height: 125, width: 125)),
+                      height: 150, width: 150)),
             ),
             Text('Precio: \$${widget.product.price} (kg)',
                 style: TextStyle(
@@ -38,7 +38,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold)),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 4.0),
+              margin: EdgeInsets.only(bottom: 4.0),
               child: Text('Notas',
                   style: TextStyle(
                       color: Color(0xFF36476C),
