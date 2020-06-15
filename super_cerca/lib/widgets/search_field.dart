@@ -5,6 +5,9 @@ import 'package:supercerca/services/database_service.dart';
 import 'package:supercerca/widgets/search_delegate.dart';
 
 class SearchField extends StatefulWidget {
+  final void Function() notifyParent;
+  SearchField({this.notifyParent});
+
   @override
   _SearchFieldState createState() => _SearchFieldState();
 }
@@ -35,7 +38,7 @@ class _SearchFieldState extends State<SearchField> {
 //        selectImage();
         showSearch(
             context: context,
-            delegate: CustomSearchDelegate(products: allProducts));
+            delegate: CustomSearchDelegate(products: allProducts, notifyParent: widget.notifyParent));
       },
       style: TextStyle(color: Color(0xFF36476C), fontSize: 20.0),
       decoration: InputDecoration(

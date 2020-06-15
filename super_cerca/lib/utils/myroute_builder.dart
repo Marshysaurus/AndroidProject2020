@@ -63,10 +63,6 @@ class MyRouteBuilder {
                     FadeTransition(opacity: animation, child: child),
             transitionDuration: Duration(seconds: 1));
         break;
-      case '/details':
-        page = MaterialPageRoute(
-            builder: (context) => DetailsScreen(product: args));
-        break;
       case '/all_payments':
         page = MaterialPageRoute(builder: (context) => AllPaymentsScreen());
         break;

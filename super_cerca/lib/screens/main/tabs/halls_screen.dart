@@ -32,7 +32,7 @@ class _HallsScreenState extends State<HallsScreen> {
           children: [
             Row(
               children: [
-                Expanded(flex: 6, child: SearchField()),
+                Expanded(flex: 6, child: SearchField(notifyParent: refresh)),
                 Expanded(
                   flex: 1,
                   child: Align(

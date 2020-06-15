@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supercerca/services/auth_service.dart';
+import 'package:supercerca/singletons/cart.dart';
 import 'package:supercerca/utils/custom_scroll.dart';
 import 'package:supercerca/widgets/dialogs.dart';
 
@@ -93,6 +94,7 @@ class _ConfigScreenState extends State<ConfigScreen> {
               final action = await Dialogs.yesCancelDialog(
                   context, "Cerrar sesión", "¿Estás seguro de cerrar sesión?");
               if (action == DialogAction.yes) {
+                myCart.orders.clear();
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/signin', (_) => false);
                 await _authService.signOut();

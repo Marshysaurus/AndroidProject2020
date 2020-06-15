@@ -42,7 +42,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
                       children: [
                         Expanded(
                           flex: 6,
-                          child: SearchField(),
+                          child: SearchField(notifyParent: refresh),
                         ),
                         Expanded(
                           flex: 1,

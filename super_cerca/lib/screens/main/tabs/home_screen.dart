@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 20.0),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 32.0),
-                  child: SearchField(),
+                  child: SearchField(notifyParent: refresh),
                 ),
                 SizedBox(height: 20.0),
                 Padding(

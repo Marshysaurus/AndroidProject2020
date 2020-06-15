@@ -33,49 +33,72 @@ class _CompletePurchaseScreenState extends State<CompletePurchaseScreen> {
     setState(() {
       loading = true;
     });
-    Future.delayed(Duration(seconds: 1), () async {
-      await callable.call(<String, dynamic>{
-        'payment_method_id': card.stripeID,
-        'currency': 'mxn',
-        'amount': totalPayment,
-        'uid': user.uid,
-        'products': myCart.orders.values.toList().map((order) {
-          return {
-            'product_id': order.product.id,
-            'product_name': order.product.title,
-            'quantity': order.quantity,
-            'notes': order.notes
-          };
-        }).toList()
-      }).then((value) {
-        setState(() {
-          loading = false;
-        });
-        if (value.data['status'] == 'succeeded') {
+    if (card != null) {
+      Future.delayed(Duration(seconds: 1), () async {
+        await callable.call(<String, dynamic>{
+          'payment_method_id': card.stripeID,
+          'currency': 'mxn',
+          'amount': totalPayment,
+          'uid': user.uid,
+          'products': myCart.orders.values.toList().map((order) {
+            return {
+              'product_id': order.product.id,
+              'product_name': order.product.title,
+              'quantity': order.quantity,
+              'notes': order.notes
+            };
+          }).toList()
+        }).then((value) {
+          setState(() {
+            loading = false;
+          });
+          if (value.data['status'] == 'succeeded') {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) =>
+                    AlertDialog(
+                        title: Text('¡Tu compra ha sido exitosa!'),
+                        actions: [FlatButton(child: Text('Aceptar'),
+                          onPressed: () {
+                            myCart.orders.clear();
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/main', (route) => false);
+                          },
+                        )
+                        ]));
+          }
+        }).catchError((error) {
           showDialog(
-            barrierDismissible: false,
               context: context,
-              builder: (context) => AlertDialog(
+              builder: (context) =>
+                  AlertDialog(
+                      title: Text('Ocurrió un problema con la compra...'),
+                      actions: [FlatButton(child: Text('Regresar'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                      ]));
+        });
+      }
+      );
+    } else {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) =>
+              AlertDialog(
                   title: Text('¡Tu compra ha sido exitosa!'),
                   actions: [FlatButton(child: Text('Aceptar'),
-                  onPressed: () {
-                    myCart.orders.clear();
-                    Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false);
-                  },
-                  )]));
-        }
-      }).catchError((error) {
-        showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                title: Text('Ocurrió un problema con la compra...'),
-                actions: [FlatButton(child: Text('Regresar'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )]));
-      });
-    });
+                    onPressed: () {
+                      myCart.orders.clear();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/main', (route) => false);
+                    },
+                  )
+                  ]));
+    }
   }
 
   Widget completeButton() {
@@ -141,11 +164,6 @@ class _CompletePurchaseScreenState extends State<CompletePurchaseScreen> {
                           Text('Calle Puente #222',
                               style: TextStyle(
                                   fontSize: 22.0, color: Color(0xFF36476C))),
-                          Spacer(),
-                          Text('Cambiar',
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  fontSize: 18.0)),
                         ],
                       ),
                     ),
@@ -166,7 +184,7 @@ class _CompletePurchaseScreenState extends State<CompletePurchaseScreen> {
                         stream: DatabaseService(uid: user.uid).usersCards,
                         builder: (context, snapshot) {
                           String svgName;
-                          if (snapshot.hasData) {
+                          if (snapshot.hasData && snapshot.data.length > 0) {
                             switch (snapshot.data[0].brand) {
                               case 'mastercard':
                                 svgName = 'assets/svg_images/mastercard.svg';
@@ -204,8 +222,24 @@ class _CompletePurchaseScreenState extends State<CompletePurchaseScreen> {
                                 ],
                               ),
                             );
+                          } else {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 15.0),
+                              child: Row(
+                                children: [
+                                  Container(
+                                      margin:
+                                      EdgeInsets.only(left: 15.0, right: 10.0),
+                                      child:
+                                      SvgPicture.asset('assets/svg_images/money.svg', height: 24.0)),
+                                  Text('Efectivo',
+                                      style: TextStyle(
+                                          color: Color(0xFF36476C),
+                                          fontSize: 18.0)),
+                                ],
+                              ),
+                            );
                           }
-                          return Container();
                         }),
                   ),
                   Text(

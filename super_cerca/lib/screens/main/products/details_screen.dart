@@ -94,15 +94,18 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 style: TextStyle(
                     color: Color(0xFF36476C),
                     fontSize: 28.0,
-                    fontWeight: FontWeight.bold)),
+                    fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 25.0),
               child: Center(
                   child: Image.network(widget.product.image,
-                      height: 150, width: 150)),
+                      height: 125, width: 125)),
             ),
             Text(
-                'Precio: \$${widget.product.price.toStringAsFixed(2)} (kg)',
+                'Precio: \$${widget.product.price.toStringAsFixed(2)}',
                 style: TextStyle(
                     color: Color(0xFF36476C),
                     fontSize: 18.0,

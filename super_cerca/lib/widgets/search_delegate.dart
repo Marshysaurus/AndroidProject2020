@@ -9,7 +9,8 @@ import 'package:supercerca/widgets/product_container.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
   final List<Product> products;
-  CustomSearchDelegate({this.products});
+  final void Function() notifyParent;
+  CustomSearchDelegate({this.products, this.notifyParent});
 
   File pickedImage;
   bool isImageLoaded;
@@ -52,7 +53,7 @@ class CustomSearchDelegate extends SearchDelegate {
             context,
             MaterialPageRoute(
                 builder: (context) => DetailsScreen(
-                    product: productsByCode[0])));
+                    product: productsByCode[0], notifyParent: notifyParent)));
       }
     }
   }
@@ -115,6 +116,7 @@ class CustomSearchDelegate extends SearchDelegate {
           itemBuilder: (context, index) {
             return ProductContainer(
               product: resultList[index],
+              notifyParent: notifyParent,
             );
           });
     }
@@ -138,7 +140,7 @@ class CustomSearchDelegate extends SearchDelegate {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        DetailsScreen(product: suggestionList[index])));
+                        DetailsScreen(product: suggestionList[index], notifyParent: notifyParent)));
           },
           // Highlights the text that matches with the query while
           // displaying the event title
