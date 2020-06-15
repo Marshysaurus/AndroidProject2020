@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 // External imports
 import 'package:stripe_payment/stripe_payment.dart';
@@ -25,6 +26,8 @@ class _NewPaymentMethodScreenState extends State<NewPaymentMethodScreen> {
   CreditCard testCard;
   PaymentMethod _paymentMethod;
 
+  bool loading = false;
+
   String cardNumber = '';
   String expiryDate = '';
   String cardHolderName = '';
@@ -36,14 +39,17 @@ class _NewPaymentMethodScreenState extends State<NewPaymentMethodScreen> {
   }
 
   callFunction() {
+    loading = true;
     Future.delayed(Duration(seconds: 2), () async {
       await callable.call(<String, dynamic>{
         'uid': '${user.uid}',
         'id': '${_paymentMethod.id}',
       });
       showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (context) {
+            loading = false;
             return AlertDialog(
               elevation: 5.0,
               title: Text('Método de pago añadido con éxito',
@@ -59,9 +65,7 @@ class _NewPaymentMethodScreenState extends State<NewPaymentMethodScreen> {
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
                   },
-                  child: Text('Aceptar',
-                      style:
-                      TextStyle(fontSize: 16.0)),
+                  child: Text('Aceptar', style: TextStyle(fontSize: 16.0)),
                 )
               ],
             );
@@ -95,75 +99,89 @@ class _NewPaymentMethodScreenState extends State<NewPaymentMethodScreen> {
     return Scaffold(
       body: SafeArea(
         child: ScrollConfiguration(
-          behavior: MyBehavior(),
-          child: ListView(
-            padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 20.0),
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Nuevo Método de Pago',
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontFamily: 'Nunito',
-                        fontSize: 28.0,
-                        fontWeight: FontWeight.bold)),
-              ),
-              CreditCardWidget(
-                cardNumber: cardNumber,
-                expiryDate: expiryDate,
-                cardHolderName: cardHolderName,
-                cvvCode: cvvCode,
-                showBackView: isCvvFocused,
-                cardBgColor: Color(0xFF5F5AB7),
-              ),
-              CreditCardForm(
-                onCreditCardModelChange: onCreditCardModelChange,
-              ),
-              Container(
-                width: double.infinity,
-                child: ButtonTheme(
-                  height: 45.0,
-                  child: FlatButton(
-                    child: Text('Agregar',
-                        style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold)),
-                    color: Colors.blue,
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        side: BorderSide(color: Colors.blue, width: 1.5)),
-                    onPressed: () async {
-                      if (cardHolderName.isNotEmpty &&
-                          cardNumber.replaceAll(' ', '').length == 16 &&
-                          expiryDate.length == 5 &&
-                          (cvvCode.length == 3 || cvvCode.length == 4)) {
-                        testCard = CreditCard(
-                          name: cardHolderName,
-                          number: cardNumber.replaceAll(' ', ''),
-                          expMonth: int.parse(expiryDate.substring(0, 2)),
-                          expYear: int.parse(expiryDate.substring(3)),
-                          cvc: cvvCode,
-                        );
-                      }
+            behavior: MyBehavior(),
+            child: Stack(
+              children: [
+                ListView(
+                  padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 20.0),
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('Nuevo Método de Pago',
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontFamily: 'Nunito',
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                    CreditCardWidget(
+                      cardNumber: cardNumber,
+                      expiryDate: expiryDate,
+                      cardHolderName: cardHolderName,
+                      cvvCode: cvvCode,
+                      showBackView: isCvvFocused,
+                      cardBgColor: Color(0xFF5F5AB7),
+                    ),
+                    CreditCardForm(
+                      onCreditCardModelChange: onCreditCardModelChange,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: ButtonTheme(
+                        height: 45.0,
+                        child: FlatButton(
+                          child: Text('Agregar',
+                              style: TextStyle(
+                                  fontSize: 18.0, fontWeight: FontWeight.bold)),
+                          color: Colors.blue,
+                          textColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              side: BorderSide(color: Colors.blue, width: 1.5)),
+                          onPressed: () async {
+                            if (cardHolderName.isNotEmpty &&
+                                cardNumber.replaceAll(' ', '').length == 16 &&
+                                expiryDate.length == 5 &&
+                                (cvvCode.length == 3 || cvvCode.length == 4)) {
+                              testCard = CreditCard(
+                                name: cardHolderName,
+                                number: cardNumber.replaceAll(' ', ''),
+                                expMonth: int.parse(expiryDate.substring(0, 2)),
+                                expYear: int.parse(expiryDate.substring(3)),
+                                cvc: cvvCode,
+                              );
+                            }
 
-                      if (testCard != null) {
-                        StripePayment.createPaymentMethod(
-                                PaymentMethodRequest(card: testCard))
-                            .then((paymentMethod) {
-                          setState(() {
-                            _paymentMethod = paymentMethod;
-                          });
-                        }).catchError((error) {});
-                        callFunction();
-                      }
-                    },
-                  ),
+                            if (testCard != null) {
+                              StripePayment.createPaymentMethod(
+                                      PaymentMethodRequest(card: testCard))
+                                  .then((paymentMethod) {
+                                setState(() {
+                                  _paymentMethod = paymentMethod;
+                                });
+                              }).catchError((error) {});
+                              callFunction();
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    ReturnButton(notifyParent: refresh)
+                  ],
                 ),
-              ),
-              ReturnButton(notifyParent: refresh)
-            ],
-          ),
-        ),
+                loading
+                    ? ModalBarrier(
+                        dismissible: false,
+                        color: Colors.black.withOpacity(0.3))
+                    : Container(),
+                loading
+                    ? Center(
+                        child: SpinKitFoldingCube(
+                        color: Colors.blue,
+                      ))
+                    : Container()
+              ],
+            )),
       ),
     );
   }

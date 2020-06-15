@@ -79,8 +79,8 @@ class _CategoryProductsState extends State<CategoryProducts> {
                                 );
                               });
                         } else {
-                          return Container(
-                            child: Text('Errores'),
+                          return Center(
+                            child: CircularProgressIndicator(),
                           );
                         }
                       },

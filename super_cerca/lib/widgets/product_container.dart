@@ -148,7 +148,7 @@ class _ProductContainerState extends State<ProductContainer> {
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold)),
             Text('${widget.product.title}',
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: Color(0xFF36476C), fontSize: 18.0)),
             Spacer(),

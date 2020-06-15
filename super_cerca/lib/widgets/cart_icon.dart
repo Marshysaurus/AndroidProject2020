@@ -1,8 +1,9 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:supercerca/screens/main/cart/cart_screen.dart';
 // Internal imports
+import 'package:supercerca/screens/main/cart/cart_screen.dart';
 import 'package:supercerca/singletons/cart.dart';
+// External imports
+import 'package:badges/badges.dart';
 
 class CartIcon extends StatefulWidget {
   CartIcon({@required this.notifyParent});
