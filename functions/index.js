@@ -25,8 +25,7 @@ exports.createStripeCustomer = functions.firestore
   });
 
 exports.addPaymentMethod = functions.https.onCall(async (data, context) => {
-  const { id } = data;
-  const uid = context.auth.uid;
+  const { id, uid } = data;
 
   const user = await (await db.collection("users").doc(uid).get()).data();
 
@@ -44,4 +43,82 @@ exports.addPaymentMethod = functions.https.onCall(async (data, context) => {
   });
 
   return response;
+});
+
+exports.deletePaymentMethod = functions.https.onCall(async (data, context) => {
+  const { id, uid } = data;
+
+  const method = await (
+    await db.collection("users").doc(uid).collection("methods").doc(id).get()
+  ).data();
+
+  const response = await stripe.paymentMethods.detach(method.stripe_id);
+
+  await db.collection("users").doc(uid).collection("methods").doc(id).delete();
+
+  return response;
+});
+
+exports.getAllProducts = functions.https.onCall(async (data, context) => {
+  return db
+    .collection("categories")
+    .get()
+    .then((categories) => {
+      return Promise.all(
+        categories.docs.map((category) => {
+          if (category.id === "promotions") return [];
+
+          return category.ref
+            .collection("products")
+            .get()
+            .then((productDocs) => {
+              return productDocs.docs;
+            });
+        })
+      );
+    })
+    .then((productResponses) => {
+      const productDocs = [];
+      productResponses.forEach((productResponse) => {
+        productDocs.push(...productResponse);
+      });
+
+      const products = productDocs.map((productDoc) => {
+        return { ...productDoc.data(), id: productDoc.id };
+      });
+
+      return products;
+    });
+});
+
+exports.payWithMethod = functions.https.onCall(async (data, context) => {
+  const { payment_method_id, currency, amount, uid, products } = data;
+
+  const user = await (await db.collection("users").doc(uid).get()).data();
+
+  const stripe_id = user.stripe_id;
+
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount,
+    currency,
+    payment_method: payment_method_id,
+    payment_method_types: ["card"],
+    confirm: true,
+    customer: stripe_id,
+  });
+
+  await db
+    .collection("users")
+    .doc(uid)
+    .collection("orders")
+    .add({
+      products,
+      stripe_id: paymentIntent.id,
+      amount,
+      currency,
+      created_at: new Date(paymentIntent.created * 1000),
+      status: paymentIntent.status,
+    });
+
+  return paymentIntent;
 });
