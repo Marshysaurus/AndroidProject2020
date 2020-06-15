@@ -7,9 +7,10 @@ import 'package:supercerca/widgets/return_button.dart';
 import 'package:supercerca/widgets/search_field.dart';
 
 class CategoryProducts extends StatefulWidget {
-  CategoryProducts({this.categoryID, this.categoryTitle});
+  CategoryProducts({this.categoryID, this.categoryTitle, this.notifyParent});
   final String categoryID;
   final String categoryTitle;
+  final void Function() notifyParent;
 
   @override
   _CategoryProductsState createState() => _CategoryProductsState();
@@ -92,7 +93,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(32.0, 0.0, 32.0, 20.0),
-              child: ReturnButton(notifyParent: refresh),
+              child: ReturnButton(notifyParent: widget.notifyParent),
             )
           ],
         ),

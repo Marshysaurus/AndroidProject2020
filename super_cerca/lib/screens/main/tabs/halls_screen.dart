@@ -56,7 +56,9 @@ class _HallsScreenState extends State<HallsScreen> {
                         MaterialPageRoute(
                             builder: (context) => CategoryProducts(
                                 categoryID: categories[index].id,
-                                categoryTitle: categories[index].title))),
+                                categoryTitle: categories[index].title,
+                              notifyParent: refresh,
+                            ))),
                     child: Container(
                       decoration: BoxDecoration(
                           border: Border.all(color: Color(0xFFE2E1E1)),
