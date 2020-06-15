@@ -18,6 +18,9 @@
 
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAGsdBIrhBY4uQbsi-8kaAaKESyzOA5A3Q"/>
+        <meta-data
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="text" />
 
         <activity
             android:name=".MainActivity"

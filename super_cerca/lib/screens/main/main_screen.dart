@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:supercerca/screens/main/tabs/config_screen.dart';
 import 'package:supercerca/screens/main/tabs/halls_screen.dart';
 import 'package:supercerca/screens/main/tabs/home_screen.dart';
+import 'package:supercerca/singletons/cart.dart';
 // External imports
 import 'package:permission_handler/permission_handler.dart';
 
@@ -34,7 +35,6 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> requestPermission(Permission permission) async {
     final status = await permission.request();
-    print(status);
   }
 
   @override
@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        body: tabs[_currentIndex],
+        body: SafeArea(child: tabs[_currentIndex]),
         bottomNavigationBar: BottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: (index) {

@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/services.dart';
@@ -49,12 +48,29 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     _loadWidget();
-    return SafeArea(
-        child: Scaffold(
-            key: _scaffoldKey,
-            body: GestureDetector(
+    return Scaffold(
+        key: _scaffoldKey,
+        body: SafeArea(
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.light,
+            child: GestureDetector(
                 onTap: () => FocusScope.of(context).unfocus(),
-                child: !loading ? _buildForm() : LoadingWidget())));
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      color: Colors.white,
+                    ),
+                    _buildForm(),
+                    loading ? ModalBarrier(
+                      color: Colors.black54,
+                    ) : SizedBox.shrink(),
+                    loading ? LoadingWidget() : SizedBox.shrink()
+                  ],
+                )),
+          ),
+        ));
   }
 
   Widget _buildForm() {
@@ -153,9 +169,10 @@ class _SignInScreenState extends State<SignInScreen> {
               keyboardType: TextInputType.text,
               obscureText: !_isPasswordVisible,
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 50.0),
             ButtonTheme(
               height: 45.0,
+              minWidth: double.infinity,
               child: FlatButton(
                 color: Color(0xFF0096FF),
                 onPressed: () async {
@@ -192,36 +209,27 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
             SizedBox(height: 20.0),
-            Container(
-              child: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(children: [
-                  TextSpan(
-                      text: "¿No tienes cuenta? ",
-                      style: TextStyle(
-                          color: Color(0xFF36476C),
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w400)),
-                  TextSpan(
-                    text: " Regístrate.",
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(children: [
+                TextSpan(
+                    text: "¿No tienes cuenta? ",
                     style: TextStyle(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
+                        color: Color(0xFF36476C),
                         fontSize: 18.0,
-                        fontWeight: FontWeight.w400),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () => Navigator.pushNamed(context, '/register'),
-                  )
-                ]),
-              ),
+                        fontWeight: FontWeight.w400)),
+                TextSpan(
+                  text: " Regístrate.",
+                  style: TextStyle(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.w400),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => Navigator.pushNamed(context, '/register'),
+                )
+              ]),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: _emailFocus.hasPrimaryFocus ||
-                          _passwordFocus.hasPrimaryFocus
-                      ? 300.0
-                      : 0.0),
-            )
           ],
         ),
       ),

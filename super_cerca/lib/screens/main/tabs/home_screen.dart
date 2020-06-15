@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 // External imports
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:supercerca/models/product.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:supercerca/models/category.dart';
+import 'package:supercerca/widgets/product_container.dart';
+import 'package:transparent_image/transparent_image.dart';
 // Internal imports
+import 'package:supercerca/models/product.dart';
 import 'package:supercerca/models/user.dart';
-import 'package:supercerca/screens/main/products/details_screen.dart';
 import 'package:supercerca/services/database_service.dart';
+import 'package:supercerca/widgets/cart_icon.dart';
 import 'package:supercerca/widgets/loading_widget.dart';
+import 'package:supercerca/widgets/search_field.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -15,88 +22,37 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  TextEditingController _searchController = TextEditingController();
-  int _current = 0;
-  final List<String> imgList = ['red', 'green', 'blue'];
+  void refresh() {
+    setState(() {});
+  }
 
-  List<Product> products;
-
-  @override
-  void initState() {
-    super.initState();
-    products = [
-      Product(
-          id: 'ID 1',
-          title: 'Cabbage boi',
-          price: 20.00,
-          image:
-              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(
-          id: 'ID 2',
-          title: 'Lechuguita',
-          price: 20.00,
-          image:
-              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(
-          id: 'ID 3',
-          title: 'Cebolla',
-          price: 20.00,
-          image:
-              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(
-          id: 'ID 4',
-          title: 'Producto 4',
-          price: 20.00,
-          image:
-              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(
-          id: 'ID 5',
-          title: 'Producto 5',
-          price: 20.00,
-          image:
-              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(
-          id: 'ID 6',
-          title: 'Producto 6',
-          price: 20.00,
-          image:
-              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(
-          id: 'ID 7',
-          title: 'Producto 7',
-          price: 20.00,
-          image:
-              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-      Product(
-          id: 'ID 8',
-          title: 'Producto 8',
-          price: 20.00,
-          image:
-              'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show'),
-    ];
+  Widget _buildCarouselShimmer(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300],
+      highlightColor: Colors.grey[100],
+      child: Container(
+        height: (MediaQuery.of(context).size.width) * (2 / 3),
+        color: Colors.white,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<User>(context);
-    final TextEditingController _searchController = TextEditingController();
-    final FocusNode _searchNode = FocusNode();
-    final border = OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(5.0),
-        ),
-        borderSide: BorderSide.none);
+    List<Category> categories = Provider.of<List<Category>>(context);
 
     return StreamBuilder<Object>(
         stream: DatabaseService(uid: user.uid).userData,
         builder: (context, snapshot) {
           if (snapshot.data != null) {
             UserData userData = snapshot.data;
+
             return ListView(
               physics: BouncingScrollPhysics(),
               children: [
                 Padding(
-                  padding: EdgeInsets.fromLTRB(32.0, 40.0, 32.0, 0.0),
+                  padding: EdgeInsets.fromLTRB(32.0, 40.0, 30.0, 0.0),
                   child: Container(
                     height: 60.0,
                     child: Row(
@@ -128,16 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Expanded(
                           flex: 1,
-                          child: Container(
+                          child: Align(
                               alignment: Alignment.centerRight,
-                              child: IconButton(
-                                onPressed: null,
-                                icon: Icon(
-                                  Icons.shopping_cart,
-                                  color: Colors.blue,
-                                  size: 28.0,
-                                ),
-                              )),
+                              child: CartIcon(notifyParent: refresh)),
                         )
                       ],
                     ),
@@ -160,109 +109,95 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 20.0),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 32.0),
-                  child: TextField(
-                    controller: _searchController,
-                    focusNode: _searchNode,
-                    style: TextStyle(color: Color(0xFF36476C), fontSize: 20.0),
-                    decoration: InputDecoration(
-                        border: border,
-                        disabledBorder: border,
-                        enabledBorder: border,
-                        filled: true,
-                        fillColor: Color(0xFFF5F5F8),
-                        focusedBorder: border,
-                        hintText: 'Buscar',
-                        hintStyle: TextStyle(
-                            color: Color(0xFF36476C).withOpacity(0.5)),
-                        prefixIcon:
-                            Icon(Icons.search, color: Color(0xFF36476C))),
-                  ),
+                  child: SearchField(),
                 ),
                 SizedBox(height: 20.0),
-                CarouselSlider(
-                  items: [
-                    Container(color: Colors.red),
-                    Container(color: Colors.green),
-                    Container(color: Colors.blue)
-                  ],
-                  options: CarouselOptions(
-                      autoPlay: false,
-                      enlargeCenterPage: true,
-                      aspectRatio: 2.0,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          _current = index;
-                        });
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Text('Populares',
+                      style: TextStyle(
+                          color: Color(0xFF36476C),
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold)),
+                ),
+                SizedBox(height: 10.0),
+                StreamBuilder<QuerySnapshot>(
+                    stream:
+                        Firestore.instance.collection('carousel').snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return _buildCarouselShimmer(context);
+                      }
+
+                      if (snapshot.data.documents.isEmpty) {
+                        return SizedBox.shrink();
+                      }
+
+                      Widget _carouselItemBuilder(
+                          BuildContext context, int index) {
+                        return Stack(
+                          children: <Widget>[
+                            Center(
+                              child: SpinKitChasingDots(color: Colors.blue),
+                            ),
+                            Container(
+                              child: FadeInImage.memoryNetwork(
+                                placeholder: kTransparentImage,
+                                image: snapshot
+                                    .data.documents[index].data['image'],
+                                fit: BoxFit.fill,
+                                height: MediaQuery.of(context).size.height,
+                                width: MediaQuery.of(context).size.width,
+                              ),
+                            )
+                          ],
+                        );
+                      }
+
+                      return CarouselSlider.builder(
+                        itemBuilder: _carouselItemBuilder,
+                        itemCount: snapshot.data.documents.length,
+                        options: CarouselOptions(
+                            autoPlay: true,
+                            enlargeCenterPage: true,
+                            pauseAutoPlayOnTouch: true,
+                            aspectRatio: 2.0),
+                      );
+                    }),
+                SizedBox(height: 20.0),
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Text('Las promociones de hoy',
+                        style: TextStyle(
+                            color: Color(0xFF36476C),
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold))),
+                SizedBox(height: 10.0),
+                Container(
+                  height: 480,
+                  child: StreamBuilder<List<Product>>(
+                      stream: DatabaseService().products(categories
+                          .where((element) => element.id == 'promotions')
+                          .first
+                          .id),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) return Container();
+
+                        List<Product> products = snapshot.data;
+
+                        return GridView.builder(
+                          itemCount: products.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2, childAspectRatio: 7 / 5),
+                          scrollDirection: Axis.horizontal,
+                          physics: BouncingScrollPhysics(),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductContainer(product: products[index], notifyParent: refresh);
+                          },
+                        );
                       }),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: imgList.map((url) {
-                    int index = imgList.indexOf(url);
-                    return Container(
-                      width: 8.0,
-                      height: 8.0,
-                      margin:
-                          EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _current == index
-                            ? Color.fromRGBO(0, 0, 0, 0.9)
-                            : Color.fromRGBO(0, 0, 0, 0.4),
-                      ),
-                    );
-                  }).toList(),
-                ),
-                SizedBox(height: 40.0),
-                Container(
-                  height: 100,
-                  child: GridView.builder(
-                    itemCount: products.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                    ),
-                    scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailsScreen(product: products[index]))),
-                        child: Center(
-                          child: Text(products[index].title),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Container(
-                  height: 100,
-                  child: GridView.builder(
-                    itemCount: products.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                    ),
-                    scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      // TODO: Poner items desde firestore con ML para productos recomendados
-                      return InkWell(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailsScreen(product: products[index]))),
-                        child: Center(
-                          child: Text(products[index].title),
-                        ),
-                      );
-                    },
-                  ),
-                )
               ],
             );
           } else {

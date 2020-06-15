@@ -12,10 +12,18 @@ class Product {
     Map data = doc.data;
 
     return Product(
-      id: doc.documentID,
-      title: data['title'] ?? 'Bulbasaur uwu',
-      image: data['image'] ?? 'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show',
-      price: data['unitPrice'].toDouble() ?? 0.0
-    );
+        id: doc.documentID,
+        title: data['title'] ?? 'Bulbasaur uwu',
+        image: data['image'] ??
+            'https://img.game8.co/3230742/b96cc2a1725020492adae5d560ca851d.png/show',
+        price: double.parse(data['unitPrice'].toString()) ?? 0.0);
+  }
+
+  factory Product.fromJSON(json) {
+    return Product(
+        id: json['id'],
+        title: json['title'],
+        image: json['image'],
+        price: double.parse('${json['unitPrice']}') ?? 0.0);
   }
 }

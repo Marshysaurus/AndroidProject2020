@@ -5,7 +5,10 @@ import 'package:supercerca/screens/authentication/signin_screen.dart';
 import 'package:supercerca/screens/authentication/register_screen.dart';
 import 'package:supercerca/screens/authentication/maps_screen.dart';
 import 'package:supercerca/screens/main/main_screen.dart';
+import 'package:supercerca/screens/main/payments/all_payments_screen.dart';
+import 'package:supercerca/screens/main/payments/new_payment_screen.dart';
 import 'package:supercerca/screens/main/products/details_screen.dart';
+import 'package:supercerca/screens/main/support/support_screen.dart';
 import 'package:supercerca/screens/splash_screen.dart';
 import 'package:supercerca/screens/wrapper.dart';
 
@@ -63,6 +66,16 @@ class MyRouteBuilder {
       case '/details':
         page = MaterialPageRoute(
             builder: (context) => DetailsScreen(product: args));
+        break;
+      case '/all_payments':
+        page = MaterialPageRoute(builder: (context) => AllPaymentsScreen());
+        break;
+      case '/add_payments':
+        page =
+            MaterialPageRoute(builder: (context) => NewPaymentMethodScreen());
+        break;
+      case '/tech_support':
+        page = MaterialPageRoute(builder: (context) => SupportScreen());
         break;
     }
     return page;

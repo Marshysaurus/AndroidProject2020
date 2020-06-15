@@ -53,13 +53,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     _loadWidget();
-    return SafeArea(
-        child: Scaffold(
-            key: _scaffoldKey,
-            resizeToAvoidBottomPadding: false,
-            body: GestureDetector(
-                onTap: () => FocusScope.of(context).unfocus(),
-                child: !loading ? _buildForm() : LoadingWidget())));
+    return Scaffold(
+        key: _scaffoldKey,
+        body: SafeArea(
+          child: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: !loading ? _buildForm() : LoadingWidget()),
+        ));
   }
 
   Widget _buildForm() {
@@ -122,7 +122,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               keyboardType: TextInputType.text,
             ),
-            SizedBox(height: 30.0),TextFormField(
+            SizedBox(height: 30.0),
+            TextFormField(
               textInputAction: TextInputAction.next,
               onFieldSubmitted: _onEmailSubmitted,
               focusNode: _emailFocus,
@@ -191,8 +192,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 onPressed: () async {
                   if (_formKey.currentState.validate()) {
                     setState(() => loading = true);
-                    dynamic result =
-                    await _authService.registerNewUser(_nameController.text, _emailController.text, _passwordController.text);
+                    dynamic result = await _authService.registerNewUser(
+                        _nameController.text,
+                        _emailController.text,
+                        _passwordController.text);
                     if (result == null) {
                       setState(() => loading = false);
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -204,7 +207,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         backgroundColor: Colors.red,
                       ));
                     } else {
-                      Navigator.of(context).pushNamedAndRemoveUntil('/maps', (_) => false);
+                      Navigator.of(context)
+                          .pushNamedAndRemoveUntil('/maps', (_) => false);
                     }
                   }
                 },
@@ -243,13 +247,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ]),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: _emailFocus.hasPrimaryFocus ||
-                      _passwordFocus.hasPrimaryFocus
-                      ? 300.0
-                      : 0.0),
-            )
           ],
         ),
       ),
@@ -264,8 +261,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   String _validateName(String name) =>
-    name.isNotEmpty ? null : 'Nombre inválido';
-
+      name.isNotEmpty ? null : 'Nombre inválido';
 
   String _validateEmail(String email) =>
       EmailValidator.validate(email) ? null : 'Email inválido';

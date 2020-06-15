@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 // External imports
 import 'package:provider/provider.dart';
 import 'package:supercerca/models/category.dart';
-import 'package:supercerca/models/product.dart';
 // Internal imports
 import 'package:supercerca/models/user.dart';
 import 'package:supercerca/services/auth_service.dart';
@@ -24,7 +23,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         StreamProvider<User>.value(value: AuthService().user),
-        StreamProvider<List<Category>>.value(value: DatabaseService().categories),
+        StreamProvider<List<Category>>.value(value: DatabaseService().categories)
       ],
       child: MaterialApp(
         title: 'Super Cerca',

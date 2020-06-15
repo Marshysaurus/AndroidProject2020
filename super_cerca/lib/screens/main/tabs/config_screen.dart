@@ -11,10 +11,6 @@ class ConfigScreen extends StatefulWidget {
 class _ConfigScreenState extends State<ConfigScreen> {
   final _authService = AuthService();
   final List<String> settings = [
-    'General',
-    'Perfil',
-    'Direcciones',
-    'Pedidos Anteriores',
     'Métodos de Pago',
     'Revisar métodos de pago',
     'Ayuda',
@@ -23,79 +19,97 @@ class _ConfigScreenState extends State<ConfigScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          ScrollConfiguration(
-            behavior: MyBehavior(),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: settings.length,
-              itemBuilder: (BuildContext context, index) {
-                return Column(
-                  children: [
-                    index == 0 || index == 4 || index == 6
-                        ? Container(
-                            alignment: Alignment.centerLeft,
-                            margin: EdgeInsets.only(top: 20.0),
-                            padding: EdgeInsets.only(left: 32.0),
-                            height: 40.0,
-                            child: Text(
-                              settings[index],
-                              style: TextStyle(
-                                  color: Color(0xFF36476C),
-                                  fontSize: 22.0,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          )
-                        : Container(
-                            alignment: Alignment.centerLeft,
-                            height: 50.0,
-                            padding: EdgeInsets.only(left: 32.0),
-                            child: Text(
-                              settings[index],
-                              style: TextStyle(
-                                  color: Color(0xFF36476C), fontSize: 22.0),
-                            )),
-                    Divider()
-                  ],
-                );
-              },
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(top: 50.0),
+          padding: EdgeInsets.only(left: 32.0),
+          child: Text('Ajustes',
+              style: TextStyle(
+                  color: Color(0xFF36476C),
+                  fontSize: 28.0,
+                  fontWeight: FontWeight.bold)),
+        ),
+        ScrollConfiguration(
+          behavior: MyBehavior(),
+          child: ListView.builder(
+            padding: EdgeInsets.only(left: 32.0),
+            shrinkWrap: true,
+            itemCount: settings.length,
+            itemBuilder: (BuildContext context, index) {
+              return Column(
+                children: [
+                  index == 0 || index == 2
+                      ? Container(
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.only(top: 20.0),
+                          height: 40.0,
+                          child: Text(
+                            settings[index],
+                            style: TextStyle(
+                                color: Color(0xFF36476C),
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      : InkWell(
+                          onTap: index == 1
+                              ? () {
+                                  Navigator.of(context)
+                                      .pushNamed('/all_payments');
+                                }
+                              : (index == 3
+                                  ? () {
+                                      Navigator.of(context)
+                                          .pushNamed('/tech_support');
+                                    }
+                                  : null),
+                          child: Container(
+                              alignment: Alignment.centerLeft,
+                              height: 50.0,
+                              child: Text(
+                                settings[index],
+                                style: TextStyle(
+                                    color: Color(0xFF36476C), fontSize: 22.0),
+                              )),
+                        ),
+                  Divider()
+                ],
+              );
+            },
+          ),
+        ),
+        Spacer(),
+        Container(
+          alignment: Alignment.centerLeft,
+          height: 60,
+          padding: EdgeInsets.only(left: 32.0),
+          child: InkWell(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            onTap: () async {
+              final action = await Dialogs.yesCancelDialog(
+                  context, "Cerrar sesión", "¿Estás seguro de cerrar sesión?");
+              if (action == DialogAction.yes) {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/signin', (_) => false);
+                await _authService.signOut();
+              }
+            },
+            child: Text(
+              "Cerrar Sesión",
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                  color: Color(0xFF36476C),
+                  fontFamily: 'Nunito',
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.bold),
             ),
           ),
-          SizedBox(height: 40.0),
-          Container(
-            alignment: Alignment.centerLeft,
-            height: 60,
-            padding: EdgeInsets.only(left: 32.0),
-            child: InkWell(
-              highlightColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              onTap: () async {
-                final action = await Dialogs.yesCancelDialog(context,
-                    "Cerrar sesión", "¿Estás seguro de cerrar sesión?");
-                if (action == DialogAction.yes) {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/signin', (_) => false);
-                  await _authService.signOut();
-                }
-              },
-              child: Text(
-                "Cerrar Sesión",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    color: Color(0xFF36476C),
-                    fontFamily: 'Nunito',
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 }
