@@ -138,7 +138,7 @@ class _CompletePurchaseScreenState extends State<CompletePurchaseScreen> {
                           Container(
                               margin: EdgeInsets.only(left: 15.0, right: 10.0),
                               child: Icon(Icons.location_on)),
-                          Text('Paseo del Cantil #51',
+                          Text('Calle Puente #222',
                               style: TextStyle(
                                   fontSize: 22.0, color: Color(0xFF36476C))),
                           Spacer(),
